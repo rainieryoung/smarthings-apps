@@ -43,6 +43,11 @@
 // 01/22/17 
 // WY1.0
 // Update script for GE Dimmer based on ASpenCO's modifications https://community.smartthings.com/t/dim-with-me-app-updated/6411/9?u=rainieryoung 
+//
+
+// 01/06/18
+// WY2.0 
+// Update for Homeseer 
 
 
 // Automatically generated. Make future change here.
@@ -83,11 +88,17 @@ def installed()
 {
 	subscribe(masters, "switch.on", switchOnHandler)
 	subscribe(masters, "switch.off", switchOffHandler)
-	//>> WY1.0
-    //subscribe(masters, "switch.setLevel", switchSetLevelHandler)
-    //subscribe(masters, "switch", switchSetLevelHandler)
+	//>> WY2.0
+    ////>> WY1.0
+    ////subscribe(masters, "switch.setLevel", switchSetLevelHandler)
+    ////subscribe(masters, "switch", switchSetLevelHandler)
+    //subscribe(masters, "level", switchSetLevelHandler)
+    ////<< WY1.0
+    subscribe(masters, "switch.setLevel", switchSetLevelHandler)
+    subscribe(masters, "switch", switchSetLevelHandler)
     subscribe(masters, "level", switchSetLevelHandler)
-    //<< WY1.0
+    //<< WY2.0
+    
 }
 
 def updated()
@@ -95,25 +106,45 @@ def updated()
 	unsubscribe()
 	subscribe(masters, "switch.on", switchOnHandler)
 	subscribe(masters, "switch.off", switchOffHandler)
-	//>> WY1.0
+	//>> WY3.0
+    ////>> WY2.0
+    //////>> WY1.0
+    //////subscribe(masters, "switch.setLevel", switchSetLevelHandler)
+    //////subscribe(masters, "switch", switchSetLevelHandler)
+    ////subscribe(masters, "level", switchSetLevelHandler)
+    //////<< WY1.0
     //subscribe(masters, "switch.setLevel", switchSetLevelHandler)
     //subscribe(masters, "switch", switchSetLevelHandler)
+    ////<< WY2.0
+    subscribe(masters, "switch.setLevel", switchSetLevelHandler)
+    subscribe(masters, "switch", switchSetLevelHandler)
     subscribe(masters, "level", switchSetLevelHandler)
-    //<< WY1.0
+    //<< W3.0
     log.info "subscribed to all of switches events"
 }
 
 def switchSetLevelHandler(evt)
 {	
-    //>> WY1.0
-    //if ((evt.value == "on") || (evt.value == "off" ))
-	//	return
-	//def level = evt.value.toFloat()
-	//level = level.toInteger()
+    //>> WY2.0
+    ////>> WY1.0
+    ////if ((evt.value == "on") || (evt.value == "off" ))
+	////	return
+	////def level = evt.value.toFloat()
+	////level = level.toInteger()
+    //
+    //log.info "switchSetLevelHandler Event: ${masters.latestValue("level")}" 
+    //slaves?.setLevel(masters.latestValue("level"))
+    ////<< WY1.0
+    log.info "switchSetLevelHandler Event.Value: $evt.value"
+    
+    if ((evt.value == "on") || (evt.value == "off" ))
+		return
+	def level = evt.value.toFloat()
+	level = level.toInteger()
 	
-    log.info "switchSetLevelHandler Event: ${masters.latestValue("level")}" 
-    slaves?.setLevel(masters.latestValue("level"))
-    //<< WY1.0
+    log.info "switchSetLevelHandler Event: $level" 
+    slaves?.setLevel(level)
+    //<< WY2.0
 
 }
 
@@ -125,10 +156,13 @@ def switchOffHandler(evt) {
 
 def switchOnHandler(evt) {
 	log.info "switchOnHandler Event: ${evt.value}"
-	def dimmerValue = masters.latestValue("level") //can be turned on by setting the level
-	//>> WY1.0
-    //slaves?.on()
-    slaves?.setLevel(masters.latestValue("level")) 
-    //<< WY1.0
+	//>> WY2.0
+    //def dimmerValue = masters.latestValue("level") //can be turned on by setting the level
+	////>> WY1.0
+    ////slaves?.on()
+    //slaves?.setLevel(masters.latestValue("level")) 
+    ////<< WY1.0
+    slaves?.on()
+    //<< WY2.0
 	slaves2?.on()
 }
